@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>זילברמינץ | כניסה למערכת</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  min-height: 100vh;
+  background: #0b1729;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  direction: rtl;
+}
+
+/* BG */
+.bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+.bg-circle { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .16; animation: float 8s ease-in-out infinite; }
+.bg-circle:nth-child(1) { width:600px;height:600px;background:#c9a84c;top:-200px;right:-200px;animation-delay:0s; }
+.bg-circle:nth-child(2) { width:500px;height:500px;background:#1a5f9f;bottom:-150px;left:-150px;animation-delay:-3s; }
+.bg-circle:nth-child(3) { width:280px;height:280px;background:#c9a84c;bottom:80px;right:80px;animation-delay:-5s;opacity:.09; }
+@keyframes float { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-28px) scale(1.04);} }
+
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0;
+  background-image: linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px), linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* CONTENT */
+.content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  width: 100%; max-width: 820px;
+}
+
+/* LOGO */
+.logo-wrap {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 12px;
+  animation: fadeDown .6s ease both;
+}
+.logo-icon {
+  width: 54px; height: 54px;
+  background: linear-gradient(135deg,#c9a84c,#e8c97a);
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 900; color: #0b1729;
+  box-shadow: 0 8px 28px rgba(201,168,76,.4);
+}
+.logo-text { color: #fff; font-size: 26px; font-weight: 800; }
+.logo-sub  { color: #c9a84c; font-size: 12px; }
+
+.tagline {
+  color: rgba(255,255,255,.4); font-size: 14px;
+  margin-bottom: 44px;
+  animation: fadeDown .6s .1s ease both;
+}
+
+/* CARDS */
+.cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px; width: 100%;
+  animation: fadeUp .6s .2s ease both;
+}
+
+/* BASE CARD */
+.card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 20px; padding: 32px 30px;
+  display: flex; flex-direction: column;
+  position: relative;
+  backdrop-filter: blur(10px);
+  transition: all .3s ease;
+}
+
+.card::before {
+  content: ''; position: absolute; inset: 0; border-radius: 20px;
+  opacity: 0; transition: opacity .3s;
+  pointer-events: none;
+}
+.card.manager::before { background: radial-gradient(circle at 70% 40%, rgba(201,168,76,.13), transparent 70%); }
+.card.tenant::before  { background: radial-gradient(circle at 70% 40%, rgba(26,95,159,.15), transparent 70%); }
+
+.card-icon-wrap {
+  width: 54px; height: 54px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; margin-bottom: 18px; flex-shrink: 0;
+  transition: transform .3s;
+}
+.card.manager .card-icon-wrap { background:rgba(201,168,76,.15); box-shadow:0 0 0 1px rgba(201,168,76,.2); }
+.card.tenant  .card-icon-wrap { background:rgba(26,95,159,.15);  box-shadow:0 0 0 1px rgba(26,95,159,.25); }
+
+.card-title { color:#fff; font-size:20px; font-weight:800; margin-bottom:6px; }
+.card-desc  { color:rgba(255,255,255,.42); font-size:13px; line-height:1.65; margin-bottom:22px; }
+
+/* ── LOGIN FORM (manager) ── */
+.login-form { display: flex; flex-direction: column; gap: 12px; }
+
+.input-wrap { position: relative; }
+.input-wrap input {
+  width: 100%; padding: 11px 14px;
+  background: rgba(255,255,255,.07);
+  border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 10px; color: #fff;
+  font-family: 'Heebo', sans-serif; font-size: 14px;
+  outline: none; transition: border-color .2s, box-shadow .2s;
+  direction: inherit;
+}
+.input-wrap input::placeholder { color: rgba(255,255,255,.28); }
+.input-wrap input:focus {
+  border-color: #c9a84c;
+  box-shadow: 0 0 0 3px rgba(201,168,76,.15);
+}
+
+.error-msg {
+  color: #f87171; font-size: 12px; font-weight: 500;
+  display: none; margin-top: -4px;
+}
+.error-msg.show { display: block; }
+
+.btn-login {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg, #c9a84c, #e8c97a);
+  color: #0b1729; border: none; border-radius: 10px;
+  font-family: 'Heebo', sans-serif; font-size: 14px; font-weight: 800;
+  cursor: pointer; transition: all .2s; margin-top: 4px;
+  box-shadow: 0 4px 14px rgba(201,168,76,.3);
+}
+.btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,.4); }
+.btn-login:active { transform: translateY(0); }
+
+/* ── TENANT CARD ── */
+.tenant-features {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 24px;
+}
+.feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,.5); }
+.fdot { width:5px;height:5px;border-radius:50%;flex-shrink:0;background:#4a9fd4; }
+
+.btn-tenant {
+  width: 100%; padding: 12px;
+  background: rgba(26,95,159,.2);
+  border: 1.5px solid rgba(74,159,212,.35);
+  color: #7ec8f0; border-radius: 10px;
+  font-family: 'Heebo', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all .2s; text-decoration: none;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative; z-index: 10;
+}
+.btn-tenant:hover {
+  background: rgba(26,95,159,.35);
+  border-color: rgba(74,159,212,.6);
+  color: #b3dff5;
+  transform: translateY(-1px);
+}
+
+/* FOOTER */
+.footer {
+  margin-top: 36px; color: rgba(255,255,255,.18); font-size: 12px;
+  animation: fadeUp .6s .4s ease both;
+}
+
+/* LANG TOGGLE */
+.lang-toggle {
+  position: fixed; top: 20px; left: 20px;
+  display: flex; background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px; padding: 3px; gap: 2px; z-index: 10;
+}
+body[dir="ltr"] .lang-toggle { left: auto; right: 20px; }
+.lang-btn {
+  padding: 5px 13px; border-radius: 16px; border: none;
+  background: transparent; color: rgba(255,255,255,.4);
+  font-family: 'Heebo', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all .2s;
+}
+.lang-btn.active { background: #c9a84c; color: #0b1729; }
+
+/* BADGE */
+.version-badge {
+  position: fixed; top: 20px; right: 20px;
+  background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.2);
+  color: #c9a84c; font-size: 11px; font-weight: 600;
+  padding: 5px 12px; border-radius: 20px; z-index: 10;
+}
+body[dir="ltr"] .version-badge { right: auto; left: 20px; }
+
+/* ANIMATIONS */
+@keyframes fadeDown { from{opacity:0;transform:translateY(-16px);} to{opacity:1;transform:translateY(0);} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px);}  to{opacity:1;transform:translateY(0);} }
+
+/* SHAKE */
+@keyframes shake {
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-7px);}
+  40%{transform:translateX(7px);}
+  60%{transform:translateX(-5px);}
+  80%{transform:translateX(5px);}
+}
+.shake { animation: shake .4s ease; }
+
+@media(max-width:640px){
+  .cards{grid-template-columns:1fr;}
+  .logo-text{font-size:22px;}
+  .logo-icon{width:44px;height:44px;font-size:20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+</div>
+<div class="bg-grid"></div>
+
+<div class="lang-toggle">
+  <button class="lang-btn active" id="btn-he" onclick="setLang('he')">עב</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+<div class="version-badge">זילברמינץ © 2026</div>
+
+<div class="content">
+
+    <div class="logo-wrap">
+    <img src="data:image/png;base64,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" alt="זילברמינץ" style="height:58px;object-fit:contain;filter:brightness(1.1);" />
+  </div>
+  </div>
+
+  <div class="tagline" id="tagline">בחר את סוג הכניסה למערכת</div>
+
+  <div class="cards">
+
+    <!-- MANAGER CARD -->
+    <div class="card manager">
+      <div class="card-icon-wrap">👔</div>
+      <div class="card-title" id="mgr-title">מנהל נכסים</div>
+      <div class="card-desc" id="mgr-desc">כניסה מאובטחת לממשק הניהול המלא</div>
+
+      <div class="login-form">
+        <div class="input-wrap">
+          <input type="text" id="username" autocomplete="username"
+            placeholder="שם משתמש" onkeydown="if(event.key==='Enter') login()"/>
+        </div>
+        <div class="input-wrap">
+          <input type="password" id="password" autocomplete="current-password"
+            placeholder="סיסמה" onkeydown="if(event.key==='Enter') login()"/>
+        </div>
+        <div class="error-msg" id="login-error">שם משתמש או סיסמה שגויים</div>
+        <button class="btn-login" onclick="login()" id="btn-login">כניסה למערכת הניהול</button>
+      </div>
+    </div>
+
+    <!-- TENANT CARD -->
+    <div class="card tenant">
+      <div class="card-icon-wrap">🏠</div>
+      <div class="card-title" id="ten-title">דייר / שוכר</div>
+      <div class="card-desc" id="ten-desc">פתיחת קריאות שירות מהירה וקלה, דיווח על תקלות ומעקב בזמן אמת</div>
+
+      <div class="tenant-features" id="ten-features">
+        <div class="feature"><div class="fdot"></div><span>פתיחת קריאת שירות</span></div>
+        <div class="feature"><div class="fdot"></div><span>העלאת תמונות</span></div>
+        <div class="feature"><div class="fdot"></div><span>מעקב סטטוס קריאה</span></div>
+        <div class="feature"><div class="fdot"></div><span>היסטוריית קריאות</span></div>
+      </div>
+
+      <button class="btn-tenant" onclick="window.location.href='tenant.html'" id="btn-tenant">
+        <span id="ten-cta">כניסה לפורטל דיירים</span>
+        <span id="ten-arrow">←</span>
+      </button>
+    </div>
+
+  </div>
+
+  <div class="footer" id="footer">© 2026 י. זילברמינץ ובנו בע"מ • כל הזכויות שמורות</div>
+</div>
+
+<script>
+// ── CREDENTIALS (שנה כאן) ──
+const USERS = {
+  'admin':   'zilber2026',
+  'nitsan':  'nitsan123',
+  'manager': 'manager1',
+};
+
+// ── DISPLAY NAMES ──
+const USER_NAMES = {
+  'admin':   'Admin',
+  'nitsan':  'Nitsan Gal-On',
+  'manager': 'Manager',
+};
+
+// ── TRANSLATIONS ──
+const TR = {
+  he: {
+    dir:'rtl', lang:'he',
+    logoSub:'ניהול נכסים מתקדם',
+    tagline:'בחר את סוג הכניסה למערכת',
+    mgrTitle:'מנהל נכסים',
+    mgrDesc:'כניסה מאובטחת לממשק הניהול המלא',
+    userPh:'שם משתמש', passPh:'סיסמה',
+    btnLogin:'כניסה למערכת הניהול',
+    loginErr:'שם משתמש או סיסמה שגויים',
+    tenTitle:'דייר / שוכר',
+    tenDesc:'פתיחת קריאות שירות מהירה וקלה, דיווח על תקלות ומעקב בזמן אמת',
+    tenFeatures:['פתיחת קריאת שירות','העלאת תמונות','מעקב סטטוס קריאה','היסטוריית קריאות'],
+    tenCta:'כניסה לפורטל דיירים', tenArrow:'←',
+    footer:'© 2026 י. זילברמינץ ובנו בע"מ • כל הזכויות שמורות',
+  },
+  en: {
+    dir:'ltr', lang:'en',
+    logoSub:'Advanced Property Management',
+    tagline:'Choose your entry point',
+    mgrTitle:'Property Manager',
+    mgrDesc:'Secure login to the full management dashboard',
+    userPh:'Username', passPh:'Password',
+    btnLogin:'Enter Management System',
+    loginErr:'Incorrect username or password',
+    tenTitle:'Tenant / Renter',
+    tenDesc:'Quick and easy service requests, fault reporting and real-time status tracking',
+    tenFeatures:['Open a service request','Upload photos','Track request status','Request history'],
+    tenCta:'Enter Tenant Portal', tenArrow:'→',
+    footer:'© 2026 Y. Zilbermintz & Son Ltd. • All rights reserved',
+  }
+};
+
+let lang = 'he';
+
+function setLang(l) {
+  lang = l;
+  const t = TR[l];
+  const isEn = l === 'en';
+
+  document.documentElement.setAttribute('lang', t.lang);
+  document.documentElement.setAttribute('dir', t.dir);
+  document.body.setAttribute('dir', t.dir);
+
+  document.getElementById('btn-he').classList.toggle('active', !isEn);
+  document.getElementById('btn-en').classList.toggle('active',  isEn);
+
+  document.getElementById('logo-sub').textContent  = t.logoSub;
+  document.getElementById('tagline').textContent   = t.tagline;
+  document.getElementById('mgr-title').textContent = t.mgrTitle;
+  document.getElementById('mgr-desc').textContent  = t.mgrDesc;
+  document.getElementById('username').placeholder  = t.userPh;
+  document.getElementById('password').placeholder  = t.passPh;
+  document.getElementById('btn-login').textContent = t.btnLogin;
+  document.getElementById('login-error').textContent = t.loginErr;
+  document.getElementById('ten-title').textContent = t.tenTitle;
+  document.getElementById('ten-desc').textContent  = t.tenDesc;
+  document.getElementById('ten-cta').textContent   = t.tenCta;
+  document.getElementById('ten-arrow').textContent = t.tenArrow;
+  document.getElementById('footer').textContent    = t.footer;
+
+  const spans = document.querySelectorAll('#ten-features .feature span');
+  t.tenFeatures.forEach((f, i) => { if (spans[i]) spans[i].textContent = f; });
+}
+
+function login() {
+  const user = document.getElementById('username').value.trim().toLowerCase();
+  const pass = document.getElementById('password').value;
+  const errEl = document.getElementById('login-error');
+  const form  = document.querySelector('.login-form');
+
+  if (USERS[user] && USERS[user] === pass) {
+    errEl.classList.remove('show');
+    sessionStorage.setItem('zb_user', user);
+    sessionStorage.setItem('zb_display_name', USER_NAMES[user] || user);
+    document.getElementById('btn-login').textContent = lang === 'he' ? '✓ מתחבר...' : '✓ Logging in...';
+    document.getElementById('btn-login').style.opacity = '0.7';
+    setTimeout(() => { window.location.href = 'manager.html'; }, 600);
+  } else {
+    errEl.classList.add('show');
+    form.classList.remove('shake');
+    void form.offsetWidth; // reflow to restart animation
+    form.classList.add('shake');
+    document.getElementById('password').value = '';
+    document.getElementById('password').focus();
+  }
+}
+</script>
+</body>
+</html>
